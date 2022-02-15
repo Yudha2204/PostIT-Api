@@ -35,7 +35,7 @@ app.put('/likeContent', async(req, res) => {
 app.post('/uploadFile', async(req, res) => {
     const file = req.body;
     const base64data = file.base64.replace(/^data:.*,/, '');
-    fs.writeFile('./files/' + file.name, base64data, 'base64', async(err) => {
+    fs.writeFile('./' + file.name, base64data, 'base64', async(err) => {
         if (err) {
             res.status(500).send(err);
             return;
@@ -44,7 +44,7 @@ app.post('/uploadFile', async(req, res) => {
     });
 
     await driveAPI.uploadFile(file, res).then(() => {
-        fs.unlink('./files/' + file.name, (err) => {
+        fs.unlink('./' + file.name, (err) => {
             res.status(500).send(err)
         })
     })

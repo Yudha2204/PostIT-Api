@@ -4,6 +4,7 @@ const path = require('path');
 const dbController = require('./databaseController');
 const fs = require('fs');
 
+
 const CLIENT_ID = '262786399580-ahknd5pohkapbmqfi241t7rclbgrqn8n.apps.googleusercontent.com';
 const CLIENT_SECRET = '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';
 const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
@@ -27,8 +28,9 @@ const drive = google.drive({
 const apis = {};
 
 apis.uploadFile = async(data, res) => {
-    const filePath = path.join('./files/', data.name);
+    const filePath = path.join('./', data.name);
     try {
+
         const response = await drive.files.create({
             requestBody: {
                 name: data.name,
