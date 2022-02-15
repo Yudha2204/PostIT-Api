@@ -49,10 +49,10 @@ apis.uploadFile = async(data, res) => {
             },
         });
         await dbController.insertNewVideo(1, response.data.id).catch((e) => {
-            res.send(e)
+            console.log("Insert New Video", e)
         });
     } catch (error) {
-        res.send(error)
+        console.log("Upload new video", error)
     }
 }
 

@@ -37,15 +37,14 @@ app.post('/uploadFile', async(req, res) => {
     const base64data = file.base64.replace(/^data:.*,/, '');
     fs.writeFile('./' + file.name, base64data, 'base64', async(err) => {
         if (err) {
-            res.status(500).send(err);
-            return;
+            return res.status(500).send(err);
         }
 
     });
 
     await driveAPI.uploadFile(file, res).then(() => {
         fs.unlink('./' + file.name, (err) => {
-            res.status(500).send(err)
+            return res.status(500).send(err);
         })
     })
     res.status(200).send({ result: "OK" })
