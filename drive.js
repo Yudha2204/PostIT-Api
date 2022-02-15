@@ -27,7 +27,7 @@ const drive = google.drive({
 
 const apis = {};
 
-apis.uploadFile = async(data, res) => {
+apis.uploadFile = async(data) => {
     const filePath = path.join('./', data.name);
     try {
 
