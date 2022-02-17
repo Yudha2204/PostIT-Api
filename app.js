@@ -3,8 +3,10 @@ const dbController = require('./databaseController');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const fs = require('fs');
-const PORT = process.env.PORT || 4300;
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+const ffmpeg = require('fluent-ffmpeg');
 
+const PORT = process.env.PORT || 4300;
 const driveAPI = require('./drive');
 
 const app = express()
@@ -16,8 +18,8 @@ app.listen(PORT, () => {
 })
 
 app.get('/videos', async(req, res) => {
-    const data = req.body;
-    const result = await dbController.getListVideo(data.date);
+    const data = req.query;
+    const result = await dbController.getListVideo(data.date, data.type);
     res.send(result.recordset);
 })
 
@@ -35,17 +37,35 @@ app.put('/likeContent', async(req, res) => {
 app.post('/uploadFile', async(req, res) => {
     const file = req.body;
     const base64data = file.base64.replace(/^data:.*,/, '');
-    fs.writeFile('./' + file.name, base64data, 'base64', async(err) => {
+    fs.writeFile('./' + file.fileName, base64data, 'base64', async(err) => {
         if (err) {
             console.log('write file', err);
         }
-
     });
 
-    await driveAPI.uploadFile(file).then(() => {
-        fs.unlink('./' + file.name, (err) => {
-            console.log('delete file from server', err);
+
+    await ffmpeg('./' + file.fileName)
+        .setFfmpegPath(ffmpegPath)
+        .output('./ff' + file.fileName)
+        .setStartTime(file.start)
+        .setDuration(file.end)
+        .on('end', async() => {
+            await driveAPI.uploadFile(file).then(() => {
+                fs.unlink('./' + file.fileName, (err) => {
+                    console.log('delete file from server', err);
+                })
+                fs.unlink('./ff' + file.fileName, (err) => {
+                    console.log('delete file from server', err);
+                })
+
+                res.status(200).send({ result: "OK" })
+            })
         })
-    })
-    res.status(200).send({ result: "OK" })
+        .on('error', (err) => {
+            console.log(err)
+        })
+        .run();
+
+
+
 })

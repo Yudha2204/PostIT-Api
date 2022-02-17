@@ -28,12 +28,12 @@ const drive = google.drive({
 const apis = {};
 
 apis.uploadFile = async(data) => {
-    const filePath = path.join('./', data.name);
+    const filePath = path.join('./', "ff" + data.fileName);
     try {
 
         const response = await drive.files.create({
             requestBody: {
-                name: data.name,
+                name: data.title + data.fileName,
                 mimeType: data.type,
             },
             media: {
@@ -48,7 +48,7 @@ apis.uploadFile = async(data) => {
                 type: 'anyone',
             },
         });
-        await dbController.insertNewVideo(1, response.data.id).catch((e) => {
+        await dbController.insertNewVideo(1, response.data.id, data).catch((e) => {
             console.log("Insert New Video", e)
         });
     } catch (error) {
