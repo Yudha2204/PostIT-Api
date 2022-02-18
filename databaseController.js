@@ -31,7 +31,7 @@ dbController.getListVideo = async(date, type) => {
             CAST((SELECT COUNT(tblUserLike.UserId) FROM tblUserLike WHERE tblUserLike.VideoID = tblVideo.VideoID and tblUserLike.UserID = 1) AS bit) AS isLike
             FROM tblVideo WHERE UploadDate > '${date}' ORDER BY UploadDate DESC`;
         } else if (date == 'undefined') {
-            query = `SELECT TOP 10 VideoID, Title, Description, URL, LikeCount, UploadDate, 
+            query = `SELECT TOP 20 VideoID, Title, Description, URL, LikeCount, UploadDate, 
             CAST((SELECT COUNT(tblUserLike.UserId) FROM tblUserLike WHERE tblUserLike.VideoID = tblVideo.VideoID and tblUserLike.UserID = 1) AS bit) AS isLike
             FROM tblVideo ORDER BY UploadDate DESC`;
         } else {
