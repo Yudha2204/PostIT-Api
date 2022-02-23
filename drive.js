@@ -17,7 +17,7 @@ const oauth2Client = new google.auth.OAuth2(
     REDIRECT_URI
 );
 
-oauth2Client.refreshAccessToken.on('tokens', (tokens) => {
+oauth2Client.on('tokens', (tokens) => {
     REFRESH_TOKEN = tokens.refresh_token
 })
 
