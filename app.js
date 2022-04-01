@@ -7,7 +7,7 @@ const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
 
 const PORT = process.env.PORT || 4300;
-const driveAPI = require('./drive');
+const ftpApi = require('./ftp');
 
 const app = express()
     .use(cors())
@@ -50,7 +50,7 @@ app.post('/uploadFile', async(req, res) => {
         .setStartTime(file.start)
         .setDuration(file.end)
         .on('end', async() => {
-            await driveAPI.uploadFile(file).then(() => {
+            await ftpApi.uploadFile(file).then(() => {
                 fs.unlink('./' + file.fileName, (err) => {
                     console.log('delete file from server', err);
                 })

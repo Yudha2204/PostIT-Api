@@ -9,7 +9,7 @@ const CLIENT_ID = '262786399580-ahknd5pohkapbmqfi241t7rclbgrqn8n.apps.googleuser
 const CLIENT_SECRET = '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';
 const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
 
-let REFRESH_TOKEN = '1//04kszuSXI_GwsCgYIARAAGAQSNwF-L9IrVyF9MeCgg4R3tJxHyHgDNYzXF9rDxUjcJ4qrPqT3C8W2wm-yBC2U9Xs9p1KZaUsO3Xc';
+let REFRESH_TOKEN = '1//047dX4bnqQ3JOCgYIARAAGAQSNwF-L9IrvHrh_-7ZiVsT76RudAlClsyi5TnehaG_PT98uRqXGGygi220bakBhLSPIDsCN51N2KM';
 
 const oauth2Client = new google.auth.OAuth2(
     CLIENT_ID,
@@ -17,9 +17,6 @@ const oauth2Client = new google.auth.OAuth2(
     REDIRECT_URI
 );
 
-oauth2Client.on('tokens', (tokens) => {
-    REFRESH_TOKEN = tokens.refresh_token
-})
 
 oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
