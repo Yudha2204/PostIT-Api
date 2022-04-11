@@ -8,6 +8,7 @@ const ffmpeg = require('fluent-ffmpeg');
 
 const PORT = process.env.PORT || 4300;
 const ftpApi = require('./ftp');
+const { response } = require('express');
 
 const app = express()
     .use(cors())
@@ -50,11 +51,8 @@ app.post('/uploadFile', async(req, res) => {
         .setStartTime(file.start)
         .setDuration(file.end)
         .on('end', async() => {
-            await ftpApi.uploadFile(file).then(() => {
+            await ftpApi.uploadFile(file, response).then(() => {
                 fs.unlink('./' + file.fileName, (err) => {
-                    console.log('delete file from server', err);
-                })
-                fs.unlink('./ff' + file.fileName, (err) => {
                     console.log('delete file from server', err);
                 })
 

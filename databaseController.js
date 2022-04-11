@@ -15,10 +15,10 @@ const dbController = {};
 dbController.insertNewVideo = async(userId, fileId, file) => {
     try {
         let pool = await sql.connect(config);
-        let url = `https://drive.google.com/uc?id=${fileId}&export=download`;
+        let url = `https://alhijrah.sch.id/imagefishery/` + file.fileName;
         await pool.request().query(`INSERT INTO tblVideo VALUES(${userId}, '${fileId}', '${url}', ${0}, '${file.title}', '${file.description}', '${file.sumber}', '${file.size}', DEFAULT)`);
     } catch (error) {
-        console.log(error);
+        throw error;
     }
 }
 
