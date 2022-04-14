@@ -24,6 +24,11 @@ app.get('/videos', async(req, res) => {
     res.send(result.recordset);
 })
 
+app.get('/myvideos/:UserId', async(req, res) => {
+    const result = await dbController.getMyVideos(req.params.UserId);
+    res.send(result.recordset);
+})
+
 app.put('/likeContent', async(req, res) => {
     const data = req.body;
     const result = await dbController.likeContent(data.userId, data.contentId, data.isLike);
@@ -32,6 +37,18 @@ app.put('/likeContent', async(req, res) => {
     } else {
         res.status(500);
         res.send({ result: "Error When Try To Like Or Unlike This Content This Content" });
+    }
+})
+
+app.post('/deleteVideo', async(req, res) => {
+    const file = req.body;
+    const result = await ftpApi.deleteFile(file.FileID)
+    if (result) {
+        await dbController.deleteVideos(file.VideoID);
+        res.send({ result: "OK" });
+    } else {
+        res.status(500);
+        res.send({ result: "Error When Try To Delete This Content This Content" });
     }
 })
 

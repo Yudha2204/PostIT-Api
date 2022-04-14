@@ -15,11 +15,8 @@ function generateString() {
     return result;
 }
 
-apis.uploadFile = async(data) => {
-
-    const filePath = path.join('./', "ff" + data.fileName);
+apis.deleteFile = async(FileID) => {
     try {
-
         const ftp = new ftpClient.Client();
 
         await ftp.access({
@@ -28,10 +25,33 @@ apis.uploadFile = async(data) => {
             password: "tidaktau321",
         })
 
-        const result = await ftp.uploadFrom(filePath, `./public_html/imagefishery/${data.fileName}`);
+        const result = await ftp.remove(`./public_html/imagefishery/${FileID}`);
+        if (result.code == 250) {
+            return true;
+        }
+    } catch (error) {
+        return false;
+    }
+}
+
+apis.uploadFile = async(data) => {
+
+    const filePath = path.join('./', "ff" + data.fileName);
+    try {
+        var nameSplit = data.type.split("/");
+        var fileName = generateString() + '.' + nameSplit[1]
+        const ftp = new ftpClient.Client();
+
+        await ftp.access({
+            host: "ftp.alhijrah.sch.id",
+            user: "u1696374",
+            password: "tidaktau321",
+        })
+
+        const result = await ftp.uploadFrom(filePath, `./public_html/imagefishery/${fileName}`);
 
         if (result.code == 226) {
-            await dbController.insertNewVideo(1, generateString(), data).catch((e) => {
+            await dbController.insertNewVideo(1, fileName, data).catch((e) => {
                 console.log("Insert New Video", e)
             });
         } else {
