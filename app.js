@@ -57,38 +57,34 @@ app.post('/uploadFile', async(req, res) => {
     const base64data = file.base64.replace(/^data:.*,/, '');
     fs.writeFile('./' + file.fileName, base64data, 'base64', async(err) => {
         if (err) {
-            console.log('write file', err);
+            return console.log('write file', err);
         }
-    });
 
-
-    await ffmpeg('./' + file.fileName)
-        .setFfmpegPath(ffmpegPath)
-        .output('./ff' + file.fileName)
-        .setStartTime(file.start)
-        .setDuration(file.end)
-        .on('end', async() => {
-            await ftpApi.uploadFile(file, response).then(() => {
-                fs.unlink('./' + file.fileName, (err) => {
-                    if (err) {
-                        console.log('erro delete file from server', err);
-                    }
-                    console.log('delete file from server');
+        await ffmpeg('./' + file.fileName)
+            .setFfmpegPath(ffmpegPath)
+            .output('./ff' + file.fileName)
+            .setStartTime(file.start)
+            .setDuration(file.end)
+            .on('end', async() => {
+                await ftpApi.uploadFile(file, response).then(() => {
+                    fs.unlink('./' + file.fileName, (err) => {
+                        if (err) {
+                            console.log('erro delete file from server', err);
+                        }
+                        console.log('delete file from server');
+                    })
+                    fs.unlink('./ff' + file.fileName, (err) => {
+                        if (err) {
+                            console.log('erro delete file from server', err);
+                        }
+                        console.log('delete file from server');
+                    })
+                    res.status(200).send({ result: "OK" })
                 })
-                fs.unlink('./ff' + file.fileName, (err) => {
-                    if (err) {
-                        console.log('erro delete file from server', err);
-                    }
-                    console.log('delete file from server');
-                })
-                res.status(200).send({ result: "OK" })
             })
-        })
-        .on('error', (err) => {
-            console.log(err)
-        })
-        .run();
-
-
-
+            .on('error', (err) => {
+                console.log(err)
+            })
+            .run();
+    });
 })
