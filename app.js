@@ -70,9 +70,17 @@ app.post('/uploadFile', async(req, res) => {
         .on('end', async() => {
             await ftpApi.uploadFile(file, response).then(() => {
                 fs.unlink('./' + file.fileName, (err) => {
-                    console.log('delete file from server', err);
+                    if (err) {
+                        console.log('erro delete file from server', err);
+                    }
+                    console.log('delete file from server');
                 })
-
+                fs.unlink('./ff' + file.fileName, (err) => {
+                    if (err) {
+                        console.log('erro delete file from server', err);
+                    }
+                    console.log('delete file from server');
+                })
                 res.status(200).send({ result: "OK" })
             })
         })
